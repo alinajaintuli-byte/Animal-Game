@@ -1148,6 +1148,105 @@ class AnimalForestRun3D {
                 this.collectCoin(coin, i);
             }
         }
+        
+        // Check animal interactions with weapons
+        for (let animal of this.otherAnimals) {
+            const distance = Math.sqrt(
+                Math.pow(this.player.x - animal.x, 2) + 
+                Math.pow(this.player.z - animal.z, 2)
+            );
+            
+            if (distance < this.player.size + animal.size) {
+                this.handleAnimalInteraction(animal);
+            }
+        }
+        
+        // Check people interactions with weapons
+        for (let person of this.people) {
+            const distance = Math.sqrt(
+                Math.pow(this.player.x - person.x, 2) + 
+                Math.pow(this.player.z - person.z, 2)
+            );
+            
+            if (distance < this.player.size + person.size) {
+                this.handlePersonInteraction(person);
+            }
+        }
+    }
+    
+    handleAnimalInteraction(animal) {
+        if (animal.behavior === 'trader') {
+            this.startTrading(animal);
+        } else if (animal.isFriendly) {
+            this.score += 10;
+            this.player.energy = Math.min(this.player.maxEnergy, this.player.energy + 10);
+        } else {
+            // Combat with hostile animals
+            if (this.player.currentSword) {
+                // Player has a sword - deal damage to animal
+                this.score += this.player.currentSword.damage;
+                this.createCombatEffect(animal.x, animal.z, '#FF6B35');
+                
+                // Remove the animal (defeated)
+                this.scene.remove(animal.mesh);
+                const index = this.otherAnimals.indexOf(animal);
+                if (index > -1) {
+                    this.otherAnimals.splice(index, 1);
+                }
+            } else {
+                // Player takes damage
+                this.player.health = Math.max(0, this.player.health - 15);
+                this.createCombatEffect(this.player.x, this.player.z, '#FF0000');
+            }
+        }
+        
+        this.updateUI();
+    }
+    
+    handlePersonInteraction(person) {
+        if (person.behavior === 'trader') {
+            this.startTrading(person);
+        } else if (person.isFriendly) {
+            this.score += 15;
+            this.player.coins += 2;
+        } else {
+            // Combat with hostile people
+            if (this.player.currentSword) {
+                // Player has a sword - deal damage to person
+                this.score += this.player.currentSword.damage;
+                this.createCombatEffect(person.x, person.z, '#FF6B35');
+                
+                // Remove the person (defeated)
+                this.scene.remove(person.mesh);
+                const index = this.people.indexOf(person);
+                if (index > -1) {
+                    this.people.splice(index, 1);
+                }
+            } else {
+                // Player takes damage
+                this.player.health = Math.max(0, this.player.health - 20);
+                this.createCombatEffect(this.player.x, this.player.z, '#FF0000');
+            }
+        }
+        
+        this.updateUI();
+    }
+    
+    createCombatEffect(x, z, color) {
+        // Create combat particle effect
+        for (let i = 0; i < 20; i++) {
+            this.particles.push({
+                x: x + (Math.random() - 0.5) * 20,
+                y: Math.random() * 10,
+                z: z + (Math.random() - 0.5) * 20,
+                vx: (Math.random() - 0.5) * 6,
+                vy: Math.random() * 4,
+                vz: (Math.random() - 0.5) * 6,
+                life: 60,
+                color: color,
+                size: Math.random() * 4 + 2
+            });
+        }
     }
     
     eatFood(food, index) {
@@ -1426,6 +1525,150 @@ class AnimalForestRun3D {
         this.renderer.render(this.scene, this.camera);
         
         requestAnimationFrame(() => this.gameLoop());
+    }
+    
+    // Weapon system functions
+    buyFromTrader(itemName) {
+        const item = this.shop.items.find(i => i.name === itemName);
+        if (item && this.player.coins >= item.cost) {
+            this.player.coins -= item.cost;
+            
+            // Apply item effect
+            switch(item.effect) {
+                case 'energy':
+                    this.player.energy = Math.min(this.player.maxEnergy, this.player.energy + item.value);
+                    break;
+                case 'health':
+                    this.player.health = Math.min(this.player.maxHealth, this.player.health + item.value);
+                    break;
+                case 'swim':
+                    this.player.swimTime += item.value;
+                    break;
+                case 'speed':
+                    this.player.speed += item.value;
+                    break;
+                case 'stomach':
+                    this.player.maxStomach += item.value;
+                    break;
+                case 'fly':
+                    this.player.flyTimer += item.value;
+                    break;
+                case 'temperature':
+                    this.player.preferredTemperature += item.value;
+                    break;
+                case 'hunger':
+                    this.player.maxHunger += item.value;
+                    break;
+                case 'size':
+                    this.player.size *= item.value;
+                    this.size = Math.floor(this.player.size / 20);
+                    break;
+            }
+            
+            this.updateUI();
+        }
+    }
+    
+    buyWeaponFromTrader(weaponName) {
+        const weapon = this.shop.weapons.find(w => w.name === weaponName);
+        if (weapon && this.player.coins >= weapon.cost) {
+            this.player.coins -= weapon.cost;
+            
+            // Apply weapon effect
+            switch(weapon.type) {
+                case 'sword':
+                    this.player.currentSword = weapon;
+                    break;
+                case 'bow':
+                    this.player.currentBow = weapon;
+                    break;
+                case 'arrows':
+                    this.player.arrows += weapon.quantity;
+                    this.player.arrowDamage = weapon.damage;
+                    break;
+            }
+            
+            this.updateUI();
+        }
+    }
+    
+    showTradingUI() {
+        // Remove existing trading UI if any
+        const existingUI = document.getElementById('tradingUI');
+        if (existingUI) {
+            existingUI.remove();
+        }
+        
+        // Create trading UI overlay
+        const tradingDiv = document.createElement('div');
+        tradingDiv.id = 'tradingUI';
+        tradingDiv.className = 'trading-ui';
+        tradingDiv.innerHTML = `
+            <div class="trading-panel">
+                <button onclick="game.closeTrading()" class="close-x">✕</button>
+                <h3>🛒 ${this.currentTrader.type} Trader</h3>
+                <p>Your Coins: ${this.player.coins}</p>
+                
+                <h4>⚔️ Weapons & Combat</h4>
+                <div class="shop-items">
+                    ${this.shop.weapons.map(weapon => `
+                        <div class="shop-item">
+                            <span>${weapon.emoji} ${weapon.name} (${weapon.damage} damage)</span>
+                            <span>${weapon.cost} 🪙</span>
+                            <button onclick="game.buyWeaponFromTrader('${weapon.name}')" 
+                                    ${this.player.coins >= weapon.cost ? '' : 'disabled'}>
+                                Buy
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <h4>🛡️ Items & Upgrades</h4>
+                <div class="shop-items">
+                    ${this.shop.items.map(item => `
+                        <div class="shop-item">
+                            <span>${item.name}</span>
+                            <span>${item.cost} 🪙</span>
+                            <button onclick="game.buyFromTrader('${item.name}')" 
+                                    ${this.player.coins >= item.cost ? '' : 'disabled'}>
+                                Buy
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="player-equipment">
+                    <h4>🎒 Your Equipment</h4>
+                    <p>🗡️ Sword: ${this.player.currentSword ? this.player.currentSword.name : 'None'}</p>
+                    <p>🏹 Bow: ${this.player.currentBow ? this.player.currentBow.name : 'None'}</p>
+                    <p>➡️ Arrows: ${this.player.arrows} (${this.player.arrowDamage} damage each)</p>
+                </div>
+            </div>
+        `;
+        
+        // Add click event listener to close trading when clicking outside the panel
+        tradingDiv.addEventListener('click', (e) => {
+            if (e.target === tradingDiv) {
+                this.closeTrading();
+            }
+        });
+        
+        document.body.appendChild(tradingDiv);
+    }
+    
+    closeTrading() {
+        this.isTrading = false;
+        this.currentTrader = null;
+        const tradingUI = document.getElementById('tradingUI');
+        if (tradingUI) {
+            tradingUI.remove();
+        }
+    }
+    
+    startTrading(trader) {
+        this.isTrading = true;
+        this.currentTrader = trader;
+        this.showTradingUI();
     }
 }
 

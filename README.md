@@ -27,8 +27,35 @@ A stunning 3D HTML5 game built with Three.js where you experience the forest in 
 
 ## 🪙 Coin System
 
-- **🪙 Coins**: Collect to buy upgrades and items
+- **🪙 Coins**: Collect to buy upgrades, items, and weapons
 - **Shop Items**: Energy Boost, Health Potion, Swim Upgrade, Speed Boost, Stomach Upgrade
+- **Weapons**: Swords, Bows, and Arrows for combat
+
+## ⚔️ Weapon System
+
+### 🗡️ Swords
+- **Oak Sword**: 20 coins (10 damage)
+- **Stone Sword**: 70 coins (20 damage)
+- **Steel Sword**: 200 coins (50 damage)
+- **Diamond Sword**: 400 coins (100 damage)
+
+### 🏹 Bows
+- **Wooden Bow**: 30 coins (15 damage)
+- **Iron Bow**: 80 coins (25 damage)
+- **Steel Bow**: 150 coins (40 damage)
+- **Diamond Bow**: 300 coins (80 damage)
+
+### ➡️ Arrows
+- **Basic Arrows**: 5 coins (5 damage, 10 arrows)
+- **Iron Arrows**: 15 coins (10 damage, 10 arrows)
+- **Steel Arrows**: 25 coins (15 damage, 10 arrows)
+- **Diamond Arrows**: 50 coins (25 damage, 10 arrows)
+
+### 🎯 Combat Mechanics
+- **Sword Combat**: Equip a sword to deal damage to hostile animals and people
+- **Bow Combat**: Equip a bow and arrows for ranged combat
+- **Defeating Enemies**: Defeat hostile creatures to earn score and coins
+- **Weapon Display**: See your current weapons in the status bar
 
 ## 🐾 Other Animals
 
