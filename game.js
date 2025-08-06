@@ -747,6 +747,11 @@ class AnimalForestRun3D {
     
     startGame() {
         this.gameStarted = true;
+        
+        // Hide start screen and mechanics display
+        document.getElementById('startScreen').style.display = 'none';
+        document.querySelector('.instructions').style.display = 'none';
+        
         this.spawnFood();
         this.spawnObstacles();
         this.spawnCoins();
@@ -1693,7 +1698,7 @@ class AnimalForestRun3D {
         
         this.updateUI();
         
-        // Show start screen and instructions again
+        // Show start screen, mechanics display, and instructions again
         document.getElementById('startScreen').style.display = 'block';
         document.querySelector('.instructions').style.display = 'block';
         document.getElementById('gameOver').style.display = 'none';
