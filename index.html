@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Forest Run</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+                        <div class="header">
+            <h1>🐾 Animal Forest Run - Sky View</h1>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-icon">📊</span>
+                    <span class="status-label">Level:</span>
+                    <span id="levelDisplay">1</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">🪙</span>
+                    <span class="status-label">Coins:</span>
+                    <span id="coinsDisplay">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">⚡</span>
+                    <span class="status-label">Powerups:</span>
+                    <span id="powerupsDisplay">0</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">📏</span>
+                    <span class="status-label">Size:</span>
+                    <span id="sizeDisplay">1</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-icon">❤️</span>
+                    <span class="status-label">Health:</span>
+                    <div class="health-container">
+                        <span id="healthDisplay">100</span>
+                        <div class="health-bar">
+                            <div id="healthBarFill" class="health-bar-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stats">
+            <div class="stat">
+                <span class="label">Score:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="stat">
+                <span class="label">Level:</span>
+                <span id="level">1</span>
+            </div>
+            <div class="stat">
+                <span class="label">Size:</span>
+                <span id="size">1</span>
+            </div>
+            <div class="stat">
+                <span class="label">Stomach:</span>
+                <span id="stomach">0/3</span>
+            </div>
+            <div class="stat">
+                <span class="label">Coins:</span>
+                <span id="coins">0</span>
+            </div>
+        </div>
+        </div>
+        
+        <div class="game-area">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div id="startScreen" class="start-screen">
+                <button id="startButton" class="start-button">🚀 START GAME</button>
+            </div>
+            <div class="controls">
+                <p>🌤️ Sky View: See the forest from above!</p>
+                <p>Use arrow keys or WASD to move</p>
+                <p>Eat food to grow bigger!</p>
+                <p>Press P to poop when eyes turn red!</p>
+                <p>Press S to sleep when tired!</p>
+                <p>Press F to fly (costs energy)!</p>
+                <p>🪙 Collect coins to buy upgrades!</p>
+                <p>🐿️ Meet friendly animals and avoid dangerous ones!</p>
+                <p>👥 Interact with people - some are friendly, others dangerous!</p>
+                <p>🫧 Bubble powerups extend swim time!</p>
+            </div>
+        </div>
+        
+        <div class="game-over" id="gameOver" style="display: none;">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button id="restartBtn">Play Again</button>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to Play:</h3>
+            <ul>
+                <li>🌤️ Experience the forest from a bird's eye view!</li>
+                <li>🛤️ Follow the windy dirt trail through the forest</li>
+                <li>🏁 Reach the finish line for speed-based coin rewards!</li>
+                <li>⚠️ Stay on the trail - off-trail areas have wolves and hunters!</li>
+                <li>🏹 Hunters shoot arrows at you when you're off the trail!</li>
+                <li>🐺 Wolves hunt in packs of 4-6 - stay away from them!</li>
+                <li>⚔️ Wolves and hunters deal direct health damage on contact!</li>
+                <li>📉 Getting attacked makes you smaller and devolve!</li>
+                <li>💀 Health reaches 0% = GAME OVER - you get nothing!</li>
+                <li>🐭 Start as a mouse and evolve into bigger animals</li>
+                <li>🍎 Eat different foods to grow and evolve</li>
+                <li>🍊 Fruits provide extra health regeneration and growth!</li>
+                <li>📈 You can only grow when at 100% health!</li>
+                <li>💩 Press P when your eyes turn red to poop</li>
+                <li>💤 Press S to sleep and restore energy</li>
+                <li>🦅 Press F to fly for 5 seconds (costs energy)</li>
+                <li>🪙 Collect coins to buy upgrades from traders</li>
+                <li>🛒 Find merchant animals (🦝) and trader people (🛒) along the trail</li>
+                <li>🦕 Giant Growth upgrade makes you 10x larger!</li>
+                <li>🐿️ Green dots = friendly animals, Red dots = dangerous</li>
+                <li>👥 Green dots = friendly people, Red dots = dangerous</li>
+                <li>💨 Fart powerups let you fly for a limited time</li>
+                <li>🫧 Bubble powerups extend your swimming time</li>
+                <li>🌊 Some animals can swim in water areas</li>
+                <li>🌙 Day/night cycle affects animal behavior</li>
+                <li>🌧️ Weather affects your animal's needs</li>
+                <li>👁️ Green eyes = hungry, need to eat!</li>
+                <li>⚡ Manage energy, thirst, hunger, and health</li>
+                <li>🏪 Use coins to buy upgrades and items</li>
+                <li>🌲 Avoid obstacles and stay in the forest!</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html> 
