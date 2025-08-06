@@ -11,6 +11,7 @@ class AnimalForestRun3D {
         this.gameOver = false;
         this.paused = false;
         this.gameStarted = false;
+        this.gameLoopRunning = false;
         
         // Player (animal)
         this.player = {
@@ -186,8 +187,8 @@ class AnimalForestRun3D {
         // Setup start button
         this.setupStartButton();
         
-        // Start game loop
-        this.gameLoop();
+        // Don't start game loop until start button is clicked
+        // this.gameLoop();
     }
     
     setup3DScene() {
@@ -757,6 +758,12 @@ class AnimalForestRun3D {
         this.spawnCoins();
         this.spawnTraders(); // Spawn traders instead of random animals
         this.spawnPeople();
+        
+        // Ensure game loop is running
+        if (!this.gameLoopRunning) {
+            this.gameLoopRunning = true;
+            this.gameLoop();
+        }
     }
     
     setupInput() {
