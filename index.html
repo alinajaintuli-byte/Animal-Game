@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animal Forest Run</title>
+    <title>Animal Forest Run - 3D 4K</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div class="game-container">
-                        <div class="header">
-            <h1>🐾 Animal Forest Run - Sky View</h1>
+        <div class="header">
+            <h1>🐾 Animal Forest Run - 3D 4K</h1>
             <div class="status-bar">
                 <div class="status-item">
                     <span class="status-icon">📊</span>
@@ -43,37 +44,38 @@
                 </div>
             </div>
             <div class="stats">
-            <div class="stat">
-                <span class="label">Score:</span>
-                <span id="score">0</span>
+                <div class="stat">
+                    <span class="label">Score:</span>
+                    <span id="score">0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Level:</span>
+                    <span id="level">1</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Size:</span>
+                    <span id="size">1</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Stomach:</span>
+                    <span id="stomach">0/3</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Coins:</span>
+                    <span id="coins">0</span>
+                </div>
             </div>
-            <div class="stat">
-                <span class="label">Level:</span>
-                <span id="level">1</span>
-            </div>
-            <div class="stat">
-                <span class="label">Size:</span>
-                <span id="size">1</span>
-            </div>
-            <div class="stat">
-                <span class="label">Stomach:</span>
-                <span id="stomach">0/3</span>
-            </div>
-            <div class="stat">
-                <span class="label">Coins:</span>
-                <span id="coins">0</span>
-            </div>
-        </div>
         </div>
         
         <div class="game-area">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div id="gameContainer" class="game-container-3d"></div>
             <div id="startScreen" class="start-screen">
                 <button id="startButton" class="start-button">🚀 START GAME</button>
             </div>
             <div class="controls">
-                <p>🌤️ Sky View: See the forest from above!</p>
+                <p>🎮 3D 4K Experience: Immerse yourself in stunning 3D graphics!</p>
                 <p>Use arrow keys or WASD to move</p>
+                <p>Mouse to look around</p>
                 <p>Eat food to grow bigger!</p>
                 <p>Press P to poop when eyes turn red!</p>
                 <p>Press S to sleep when tired!</p>
@@ -94,8 +96,8 @@
         <div class="instructions">
             <h3>How to Play:</h3>
             <ul>
-                <li>🌤️ Experience the forest from a bird's eye view!</li>
-                <li>🛤️ Follow the windy dirt trail through the forest</li>
+                <li>🎮 Experience stunning 3D graphics in 4K resolution!</li>
+                <li>🛤️ Follow the windy dirt trail through the 3D forest</li>
                 <li>🏁 Reach the finish line for speed-based coin rewards!</li>
                 <li>⚠️ Stay on the trail - off-trail areas have wolves and hunters!</li>
                 <li>🏹 Hunters shoot arrows at you when you're off the trail!</li>

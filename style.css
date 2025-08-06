@@ -202,11 +202,20 @@ body {
     margin-bottom: 20px;
 }
 
-#gameCanvas {
+.game-container-3d {
+    width: 100%;
+    height: 600px;
     border: 3px solid #2d5a27;
     border-radius: 15px;
-    background: linear-gradient(180deg, #87ceeb 0%, #98fb98 100%);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.game-container-3d canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
 }
 
 .start-screen {

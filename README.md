@@ -1,6 +1,6 @@
-# 🐾 Animal Forest Run - Sky View
+# 🐾 Animal Forest Run - 3D 4K
 
-A unique HTML5 game where you experience the forest from above! Start as a small mouse and evolve into bigger animals by eating different types of food in a beautiful forest environment, all from a bird's eye view.
+A stunning 3D HTML5 game built with Three.js where you experience the forest in full 3D graphics with 4K resolution support! Start as a small mouse and evolve into bigger animals by eating different types of food in a beautiful 3D forest environment with realistic lighting, shadows, and immersive gameplay.
 
 ## 🎮 How to Play
 
@@ -53,7 +53,8 @@ A unique HTML5 game where you experience the forest from above! Start as a small
 
 ## 🎯 Controls
 
-- **WASD** or **Arrow Keys**: Move your animal
+- **WASD** or **Arrow Keys**: Move your animal in 3D space
+- **Mouse**: Look around the 3D environment
 - **P**: Poop when your eyes turn red
 - **S**: Sleep to regenerate energy
 - **F**: Fly for 5 seconds (costs energy)
@@ -76,12 +77,15 @@ A unique HTML5 game where you experience the forest from above! Start as a small
 
 ## 🌲 Game Features
 
-- **🌤️ Sky View**: Experience the forest from a bird's eye view!
+- **🎮 3D Graphics**: Full 3D environment with Three.js
+- **4K Resolution**: High-quality rendering with 4K support
+- **Realistic Lighting**: Dynamic day/night cycle with shadows
+- **3D Models**: All objects are fully 3D with realistic geometry
 - **Realistic Animal Behaviors**: Energy, thirst, health, and temperature systems
-- **Day/Night Cycle**: Affects animal behavior and visibility
+- **Day/Night Cycle**: Affects animal behavior and visibility with dynamic lighting
 - **Weather System**: Rain, temperature variations, and wind effects
-- **Beautiful Forest Environment**: Dynamic sky with stars and weather effects
-- **Animal Evolution**: 9 different animal stages with realistic traits
+- **Beautiful 3D Forest Environment**: Dynamic sky with stars and weather effects
+- **Animal Evolution**: 9 different animal stages with realistic 3D traits
 - **Swimming Mechanics**: Different animals can swim for different durations
 - **Flying**: Press F to fly for 5 seconds (costs energy)
 - **Stomach System**: Each animal can hold different amounts of food
@@ -89,10 +93,11 @@ A unique HTML5 game where you experience the forest from above! Start as a small
 - **Sleep System**: Press S to sleep and regenerate energy
 - **Nutrition System**: Different foods provide different benefits
 - **Nocturnal Animals**: Some animals are more active at night
-- **Particle Effects**: Visual feedback for all actions
+- **3D Particle Effects**: Visual feedback for all actions in 3D space
 - **Evolution Effects**: Special golden particles when evolving
 - **Progressive Difficulty**: More food spawns as you play
 - **Score System**: Track your progress and level
+- **Mouse Controls**: Look around the immersive 3D environment
 
 ## 🚀 How to Run
 
@@ -102,10 +107,14 @@ A unique HTML5 game where you experience the forest from above! Start as a small
 
 ## 🎨 Technical Details
 
-- **Pure HTML5 Canvas**: No external dependencies
+- **Three.js 3D Engine**: Full 3D graphics with WebGL
+- **4K Resolution Support**: High-quality rendering with pixel-perfect graphics
+- **Realistic Lighting**: Ambient, directional, and point lighting
+- **Shadow Mapping**: Realistic shadows with PCF soft shadow mapping
 - **Responsive Design**: Works on different screen sizes
-- **Smooth Animation**: 60fps gameplay
+- **Smooth Animation**: 60fps gameplay with optimized rendering
 - **Modern UI**: Beautiful gradients and effects
+- **WebGL Acceleration**: Hardware-accelerated 3D graphics
 
 ## 🏆 Tips for High Scores
 
