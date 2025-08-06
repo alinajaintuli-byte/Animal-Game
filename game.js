@@ -17,6 +17,7 @@ class AnimalForestRun3D {
             x: 0,
             y: 0,
             z: 0,
+            rotation: 0,
             size: 1,
             speed: 0.1,
             animalType: 'mouse',
@@ -58,7 +59,9 @@ class AnimalForestRun3D {
             currentSword: null,
             currentBow: null,
             arrows: 0,
-            arrowDamage: 0
+            arrowDamage: 0,
+            // Health regeneration
+            healthRegenTimer: 0
         };
         
         // Animal evolution stages with realistic behaviors
@@ -159,6 +162,12 @@ class AnimalForestRun3D {
                 { name: 'Iron Arrows', cost: 15, type: 'arrows', damage: 10, emoji: '➡️', quantity: 10 },
                 { name: 'Steel Arrows', cost: 25, type: 'arrows', damage: 15, emoji: '➡️', quantity: 10 },
                 { name: 'Diamond Arrows', cost: 50, type: 'arrows', damage: 25, emoji: '➡️', quantity: 10 }
+            ],
+            powerups: [
+                { name: 'Fart Powerup', cost: 15, type: 'powerup', effect: 'fly', emoji: '💨', duration: 900 },
+                { name: 'Bubble Powerup', cost: 10, type: 'powerup', effect: 'swim', emoji: '🫧', duration: 120 },
+                { name: 'Speed Powerup', cost: 20, type: 'powerup', effect: 'speed', emoji: '⚡', duration: 180 },
+                { name: 'Health Powerup', cost: 25, type: 'powerup', effect: 'health', emoji: '❤️', duration: 0 }
             ]
         };
         
@@ -739,10 +748,9 @@ class AnimalForestRun3D {
     startGame() {
         this.gameStarted = true;
         this.spawnFood();
-        this.spawnPowerups();
         this.spawnObstacles();
         this.spawnCoins();
-        this.spawnOtherAnimals();
+        this.spawnTraders(); // Spawn traders instead of random animals
         this.spawnPeople();
     }
     
@@ -776,36 +784,55 @@ class AnimalForestRun3D {
         // Update environmental effects
         this.updateEnvironment();
         
-        // Handle movement
-        let speed = this.player.speed;
+        // Calculate speed based on health - lower health = slower speed
+        let baseSpeed = this.player.speed;
+        let healthMultiplier = this.player.health / this.player.maxHealth;
+        
+        // Speed decreases linearly with health: 100% health = full speed, 0% health = 20% speed
+        let speed = baseSpeed * (0.2 + (healthMultiplier * 0.8));
         
         if (this.keys['w'] || this.keys['arrowup']) {
-            this.player.z -= speed;
+            this.player.z -= speed * Math.cos(this.player.rotation);
+            this.player.x -= speed * Math.sin(this.player.rotation);
         }
         if (this.keys['s'] || this.keys['arrowdown']) {
-            this.player.z += speed;
+            this.player.z += speed * Math.cos(this.player.rotation);
+            this.player.x += speed * Math.sin(this.player.rotation);
         }
         if (this.keys['a'] || this.keys['arrowleft']) {
-            this.player.x -= speed;
+            this.player.rotation += 0.05;
         }
         if (this.keys['d'] || this.keys['arrowright']) {
-            this.player.x += speed;
+            this.player.rotation -= 0.05;
         }
         
-        // Update player mesh position
+        // Update player mesh position and rotation
         this.playerMesh.position.set(this.player.x, this.player.y, this.player.z);
+        this.playerMesh.rotation.y = this.player.rotation;
         
-        // Update camera to follow player
-        this.camera.position.set(this.player.x, this.player.y + 8, this.player.z + 12);
-        this.camera.lookAt(this.player.x, this.player.y, this.player.z);
+        // Chase camera - follows behind and slightly above the player
+        const cameraDistance = 8;
+        const cameraHeight = 3;
+        const lookAheadDistance = 5;
+        
+        // Calculate camera position behind the player
+        this.camera.position.x = this.player.x - Math.sin(this.player.rotation) * cameraDistance;
+        this.camera.position.z = this.player.z - Math.cos(this.player.rotation) * cameraDistance;
+        this.camera.position.y = this.player.y + cameraHeight;
+        
+        // Look ahead of the player for better visibility
+        const lookAheadX = this.player.x - Math.sin(this.player.rotation) * lookAheadDistance;
+        const lookAheadZ = this.player.z - Math.cos(this.player.rotation) * lookAheadDistance;
+        
+        this.camera.lookAt(lookAheadX, this.player.y + 2, lookAheadZ);
         
         // Update realistic needs
         this.updateAnimalNeeds();
     }
     
     updateEnvironment() {
-        // Realistic day/night cycle
-        this.weather.timeOfDay += 0.01;
+        // Fast day/night cycle: 30 seconds night, 60 seconds day
+        this.weather.timeOfDay += 0.04; // Faster cycle
         if (this.weather.timeOfDay >= 24) {
             this.weather.timeOfDay = 0;
         }
@@ -949,6 +976,23 @@ class AnimalForestRun3D {
             this.player.health = Math.max(0, this.player.health - 0.05);
         }
         
+        // Passive health regeneration: 8% every 10 seconds
+        if (!this.player.healthRegenTimer) {
+            this.player.healthRegenTimer = 0;
+        }
+        this.player.healthRegenTimer++;
+        
+        if (this.player.healthRegenTimer >= 600) { // 10 seconds at 60fps
+            const healthGain = Math.floor(this.player.maxHealth * 0.08);
+            this.player.health = Math.min(this.player.maxHealth, this.player.health + healthGain);
+            this.player.healthRegenTimer = 0;
+            
+            // Show regeneration message occasionally
+            if (this.player.health < this.player.maxHealth) {
+                this.showMessage(`❤️ Regenerated ${healthGain} health!`, "success");
+            }
+        }
+        
         // Age increases slowly
         this.player.age += 0.001;
         
@@ -956,6 +1000,132 @@ class AnimalForestRun3D {
         this.player.lastAte++;
         this.player.lastDrank++;
         this.player.lastSlept++;
+        
+        // Update sleep timer if sleeping
+        if (this.player.isSleeping) {
+            this.player.sleepTime++;
+        }
+    }
+    
+    sleep() {
+        // Check if it's night time (between 18:00 and 6:00)
+        // With new cycle: night is 18:00-6:00 (12 hours = 30 seconds)
+        const isNight = this.weather.timeOfDay < 6 || this.weather.timeOfDay > 18;
+        
+        if (!isNight) {
+            // Show message that you can only sleep at night
+            this.showMessage("🌅 You can only sleep at night! Wait until sunset.", "warning");
+            return;
+        }
+        
+        if (this.player.isSleeping) {
+            // If already sleeping, wake up
+            this.wakeUp();
+            return;
+        }
+        
+        // Start sleeping
+        this.player.isSleeping = true;
+        this.player.sleepTime = 0;
+        this.showMessage("💤 Sleeping... Press S again to wake up", "info");
+    }
+    
+    wakeUp() {
+        if (!this.player.isSleeping) {
+            return;
+        }
+        
+        // Calculate energy restored based on sleep time
+        const energyRestored = Math.min(50, this.player.sleepTime * 2);
+        this.player.energy = Math.min(this.player.maxEnergy, this.player.energy + energyRestored);
+        
+        // Stop sleeping
+        this.player.isSleeping = false;
+        this.player.lastSlept = this.weather.timeOfDay;
+        
+        this.showMessage(`💤 Woke up! Restored ${energyRestored} energy`, "success");
+    }
+    
+    showMessage(message, type = "info") {
+        // Create or update message display
+        let messageDiv = document.getElementById('gameMessage');
+        if (!messageDiv) {
+            messageDiv = document.createElement('div');
+            messageDiv.id = 'gameMessage';
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: bold;
+                z-index: 1000;
+                text-align: center;
+                max-width: 300px;
+            `;
+            document.body.appendChild(messageDiv);
+        }
+        
+        // Set color based on message type
+        switch(type) {
+            case "warning":
+                messageDiv.style.color = "#FFD700";
+                break;
+            case "success":
+                messageDiv.style.color = "#4CAF50";
+                break;
+            case "error":
+                messageDiv.style.color = "#F44336";
+                break;
+            default:
+                messageDiv.style.color = "white";
+        }
+        
+        messageDiv.textContent = message;
+        
+        // Remove message after 3 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 3000);
+    }
+    
+    poop() {
+        if (!this.player.needsToPoop) {
+            this.showMessage("💩 You don't need to poop right now!", "info");
+            return;
+        }
+        
+        // Reset stomach and poop timer
+        this.player.stomach = 0;
+        this.player.needsToPoop = false;
+        this.player.poopTimer = 0;
+        
+        this.showMessage("💩 Pooped! Your stomach is empty now.", "success");
+    }
+    
+    fly() {
+        if (!this.player.canFly) {
+            this.showMessage("🦅 You can't fly yet! Buy flying upgrades from traders.", "warning");
+            return;
+        }
+        
+        if (this.player.energy < 20) {
+            this.showMessage("⚡ Not enough energy to fly!", "warning");
+            return;
+        }
+        
+        // Start flying
+        this.player.isFlying = true;
+        this.player.flyTimer = 900; // 15 seconds at 60fps
+        this.player.energy -= 20;
+        
+        this.showMessage("🦅 Flying! Press F again to land", "info");
     }
     
     spawnFood() {
@@ -983,31 +1153,8 @@ class AnimalForestRun3D {
         this.foods.push(food);
     }
     
-    spawnPowerups() {
-        const powerupType = this.powerupTypes[Math.floor(Math.random() * this.powerupTypes.length)];
-        const powerup = {
-            x: (Math.random() - 0.5) * 100,
-            y: 1,
-            z: (Math.random() - 0.5) * 100,
-            type: powerupType.type,
-            emoji: powerupType.emoji,
-            points: powerupType.points,
-            color: powerupType.color,
-            size: powerupType.size,
-            effect: powerupType.effect
-        };
-        
-        // Create 3D powerup object
-        const powerupGeometry = new THREE.SphereGeometry(powerup.size, 8, 8);
-        const powerupMaterial = new THREE.MeshLambertMaterial({ color: powerupType.color });
-        const powerupMesh = new THREE.Mesh(powerupGeometry, powerupMaterial);
-        powerupMesh.position.set(powerup.x, powerup.y, powerup.z);
-        powerupMesh.castShadow = true;
-        this.scene.add(powerupMesh);
-        
-        powerup.mesh = powerupMesh;
-        this.powerups.push(powerup);
-    }
+    // Powerups are now only available from traders
+    // spawnPowerups() function removed - all powerups must be purchased
     
     spawnCoins() {
         const coin = {
@@ -1058,6 +1205,42 @@ class AnimalForestRun3D {
         
         animal.mesh = animalMesh;
         this.otherAnimals.push(animal);
+    }
+    
+    spawnTraders() {
+        // Spawn traders at fixed locations
+        const traderPositions = [
+            { x: -50, z: -50, type: 'merchant', emoji: '🦝' },
+            { x: 50, z: -50, type: 'trader', emoji: '🛒' },
+            { x: -50, z: 50, type: 'merchant', emoji: '🦝' },
+            { x: 50, z: 50, type: 'trader', emoji: '🛒' }
+        ];
+        
+        traderPositions.forEach((pos, index) => {
+            const trader = {
+                x: pos.x,
+                y: 1.5,
+                z: pos.z,
+                type: pos.type,
+                emoji: pos.emoji,
+                size: 1.5,
+                speed: 0,
+                isFriendly: true,
+                behavior: 'trader',
+                color: '#FFD700'
+            };
+            
+            // Create 3D trader object
+            const traderGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 8);
+            const traderMaterial = new THREE.MeshLambertMaterial({ color: 0xFFD700 });
+            const traderMesh = new THREE.Mesh(traderGeometry, traderMaterial);
+            traderMesh.position.set(trader.x, trader.y, trader.z);
+            traderMesh.castShadow = true;
+            this.scene.add(traderMesh);
+            
+            trader.mesh = traderMesh;
+            this.otherAnimals.push(trader);
+        });
     }
     
     spawnPeople() {
@@ -1371,6 +1554,28 @@ class AnimalForestRun3D {
             healthDisplay.classList.add('danger');
         }
         
+        // Calculate current speed based on health
+        let baseSpeed = this.player.speed;
+        let healthMultiplier = this.player.health / this.player.maxHealth;
+        let currentSpeed = baseSpeed * (0.2 + (healthMultiplier * 0.8));
+        let speedPercentage = Math.floor((currentSpeed / baseSpeed) * 100);
+        
+        // Update speed display if it exists
+        const speedDisplay = document.getElementById('speedDisplay');
+        if (speedDisplay) {
+            speedDisplay.textContent = `${speedPercentage}%`;
+            
+            // Update speed display color based on health
+            speedDisplay.classList.remove('healthy', 'warning', 'danger');
+            if (speedPercentage > 80) {
+                speedDisplay.classList.add('healthy');
+            } else if (speedPercentage > 50) {
+                speedDisplay.classList.add('warning');
+            } else {
+                speedDisplay.classList.add('danger');
+            }
+        }
+        
         // Update health bar
         const healthBarFill = document.getElementById('healthBarFill');
         const healthPercentage = (this.player.health / this.player.maxHealth) * 100;
@@ -1459,7 +1664,8 @@ class AnimalForestRun3D {
             maxHealth: 100,
             coins: 0,
             isShopping: false,
-            powerups: 0
+            powerups: 0,
+            healthRegenTimer: 0
         };
         
         // Clear all game objects
@@ -1505,9 +1711,6 @@ class AnimalForestRun3D {
                 }
                 if (Math.random() < 0.005) {
                     this.spawnCoins();
-                }
-                if (Math.random() < 0.003) {
-                    this.spawnOtherAnimals();
                 }
                 if (Math.random() < 0.002) {
                     this.spawnPeople();
@@ -1592,6 +1795,37 @@ class AnimalForestRun3D {
         }
     }
     
+    buyPowerupFromTrader(powerupName) {
+        const powerup = this.shop.powerups.find(p => p.name === powerupName);
+        if (powerup && this.player.coins >= powerup.cost) {
+            this.player.coins -= powerup.cost;
+            this.player.powerups++;
+            
+            // Apply powerup effect
+            switch(powerup.effect) {
+                case 'fly':
+                    this.player.isFlying = true;
+                    this.player.flyTimer = powerup.duration;
+                    this.player.canFly = true;
+                    break;
+                case 'swim':
+                    this.player.swimTime += powerup.duration;
+                    break;
+                case 'speed':
+                    this.player.speed *= 1.5;
+                    setTimeout(() => {
+                        this.player.speed /= 1.5;
+                    }, powerup.duration * 16); // Convert to milliseconds
+                    break;
+                case 'health':
+                    this.player.health = Math.min(this.player.maxHealth, this.player.health + 50);
+                    break;
+            }
+            
+            this.updateUI();
+        }
+    }
+    
     showTradingUI() {
         // Remove existing trading UI if any
         const existingUI = document.getElementById('tradingUI');
@@ -1623,6 +1857,20 @@ class AnimalForestRun3D {
                     `).join('')}
                 </div>
                 
+                <h4>⚡ Powerups & Effects</h4>
+                <div class="shop-items">
+                    ${this.shop.powerups.map(powerup => `
+                        <div class="shop-item">
+                            <span>${powerup.emoji} ${powerup.name}</span>
+                            <span>${powerup.cost} 🪙</span>
+                            <button onclick="game.buyPowerupFromTrader('${powerup.name}')" 
+                                    ${this.player.coins >= powerup.cost ? '' : 'disabled'}>
+                                Buy
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+                
                 <h4>🛡️ Items & Upgrades</h4>
                 <div class="shop-items">
                     ${this.shop.items.map(item => `
@@ -1642,6 +1890,7 @@ class AnimalForestRun3D {
                     <p>🗡️ Sword: ${this.player.currentSword ? this.player.currentSword.name : 'None'}</p>
                     <p>🏹 Bow: ${this.player.currentBow ? this.player.currentBow.name : 'None'}</p>
                     <p>➡️ Arrows: ${this.player.arrows} (${this.player.arrowDamage} damage each)</p>
+                    <p>⚡ Powerups: ${this.player.powerups}</p>
                 </div>
             </div>
         `;

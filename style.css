@@ -252,6 +252,80 @@ body {
     transform: translateY(-1px) scale(1.02);
 }
 
+.mechanics-display {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mechanics-display h3 {
+    text-align: center;
+    color: #2d5a27;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.mechanics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.mechanic-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid #4CAF50;
+}
+
+.mechanic-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.mechanic-icon {
+    font-size: 1.4em;
+    min-width: 30px;
+    text-align: center;
+}
+
+.mechanic-label {
+    font-weight: bold;
+    color: #2d5a27;
+    font-size: 0.9em;
+    min-width: 60px;
+}
+
+.mechanic-key {
+    background: #4CAF50;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+}
+
+.mechanic-desc {
+    color: #666;
+    font-size: 0.8em;
+    flex: 1;
+    text-align: right;
+}
+
 .trading-ui {
     position: fixed;
     top: 0;

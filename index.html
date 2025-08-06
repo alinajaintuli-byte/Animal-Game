@@ -42,11 +42,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="status-item">
-                    <span class="status-icon">⚔️</span>
-                    <span class="status-label">Weapons:</span>
-                    <span id="weaponDisplay">None</span>
-                </div>
+                                    <div class="status-item">
+                        <span class="status-icon">⚔️</span>
+                        <span class="status-label">Weapons:</span>
+                        <span id="weaponDisplay">None</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-icon">🏃</span>
+                        <span class="status-label">Speed:</span>
+                        <span id="speedDisplay">100%</span>
+                    </div>
             </div>
             <div class="stats">
                 <div class="stat">
@@ -76,6 +81,66 @@
             <div id="gameContainer" class="game-container-3d"></div>
             <div id="startScreen" class="start-screen">
                 <button id="startButton" class="start-button">🚀 START GAME</button>
+                
+                <div class="mechanics-display">
+                    <h3>🎮 Basic Game Mechanics</h3>
+                    <div class="mechanics-grid">
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">💩</span>
+                            <span class="mechanic-label">Poop</span>
+                            <span class="mechanic-key">P</span>
+                            <span class="mechanic-desc">When eyes turn red</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">💤</span>
+                            <span class="mechanic-label">Sleep</span>
+                            <span class="mechanic-key">S</span>
+                            <span class="mechanic-desc">Night only (30s cycle)</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">🦅</span>
+                            <span class="mechanic-label">Fly</span>
+                            <span class="mechanic-key">F</span>
+                            <span class="mechanic-desc">15 seconds (costs energy)</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">🏃</span>
+                            <span class="mechanic-label">Move</span>
+                            <span class="mechanic-key">WASD</span>
+                            <span class="mechanic-desc">W/S forward/back, A/D turn</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">🖱️</span>
+                            <span class="mechanic-label">Look</span>
+                            <span class="mechanic-key">Mouse</span>
+                            <span class="mechanic-desc">Look around 3D environment</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">🛒</span>
+                            <span class="mechanic-label">Trade</span>
+                            <span class="mechanic-key">Click</span>
+                            <span class="mechanic-desc">Click on traders (🦝🛒)</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">⚔️</span>
+                            <span class="mechanic-label">Combat</span>
+                            <span class="mechanic-key">Contact</span>
+                            <span class="mechanic-desc">Touch enemies with weapons</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">❤️</span>
+                            <span class="mechanic-label">Health</span>
+                            <span class="mechanic-key">Auto</span>
+                            <span class="mechanic-desc">8% regen every 10 seconds</span>
+                        </div>
+                        <div class="mechanic-item">
+                            <span class="mechanic-icon">🏃</span>
+                            <span class="mechanic-label">Speed</span>
+                            <span class="mechanic-key">Health</span>
+                            <span class="mechanic-desc">Lower health = slower speed</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="controls">
                 <p>🎮 3D 4K Experience: Immerse yourself in stunning 3D graphics!</p>
@@ -83,8 +148,8 @@
                 <p>Mouse to look around</p>
                 <p>Eat food to grow bigger!</p>
                 <p>Press P to poop when eyes turn red!</p>
-                <p>Press S to sleep when tired!</p>
-                <p>Press F to fly (costs energy)!</p>
+                <p>Press S to sleep when tired! (30-second night cycle)</p>
+                <p>Press F to fly for 15 seconds (costs energy)!</p>
                 <p>🪙 Collect coins to buy upgrades!</p>
                 <p>🐿️ Meet friendly animals and avoid dangerous ones!</p>
                 <p>👥 Interact with people - some are friendly, others dangerous!</p>
@@ -115,8 +180,8 @@
                 <li>🍊 Fruits provide extra health regeneration and growth!</li>
                 <li>📈 You can only grow when at 100% health!</li>
                 <li>💩 Press P when your eyes turn red to poop</li>
-                <li>💤 Press S to sleep and restore energy</li>
-                <li>🦅 Press F to fly for 5 seconds (costs energy)</li>
+                <li>💤 Press S to sleep and restore energy (30-second night cycle)</li>
+                <li>🦅 Press F to fly for 15 seconds (costs energy)</li>
                 <li>🪙 Collect coins to buy upgrades from traders</li>
                 <li>🛒 Find merchant animals (🦝) and trader people (🛒) along the trail</li>
                 <li>🦕 Giant Growth upgrade makes you 10x larger!</li>
